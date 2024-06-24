@@ -15,12 +15,14 @@ typedef unsigned long long ulonglong;
 #if defined(_WIN32) || defined(_WIN64)
 #define WINDOWS
 #include <windows.h>
-void printcolor(const char* text, int color);
+void printcolor(const char* text, int color, ...);
 #endif
 
 //check if linux
 #if defined(__linux__)
 #define LINUX
 #include <unistd.h>
-void printcolor(const char* text, int color);
+void printcolor(const char* text, int color, ...);
 #endif
+
+void HydronixPrintError(const char *message, int line, int column, const char *body, const char* current, int code);

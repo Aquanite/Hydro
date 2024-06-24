@@ -188,7 +188,14 @@ void FindFunctions(const char* source)
 			{
 				//set console color to red
 
-				printf("HYDRO 0: Function %s has a return statement but is of type void\n", name);
+				//printcolor the line and column of the return statement
+				//printcolor the error message
+				HydronixPrintError("Function has a return statement but is of type 'void' | ", line, current - body, body, current, 0);
+				printf("\n");
+				
+
+				//exit the program
+				exit(-1);
 			}
 		}
 		current++;
