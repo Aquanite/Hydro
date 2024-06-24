@@ -1,0 +1,12 @@
+
+x64/Debug/Hydro.exe
+*.exe
+*.pdb
+*.obj
+*.idb
+*.tlog
+*.log
+*.ilk
+*.recipe
+/.vs
+/.vscode
