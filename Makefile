@@ -1,4 +1,4 @@
-#compile Main.c Parser.c Definitions.c for windows or linux depending on the OS
+#compile all in src and the headers are in include
 
 # OS detection
 ifeq ($(OS),Windows_NT)
@@ -9,19 +9,45 @@ else
 	EXECUTABLE = Main
 endif
 
-# Compile
-all: Main.c Parser.c Definitions.c
-	if [ ! -d "./HydroCompiled" ]; then mkdir HydroCompiled; fi
-	gcc -o ./HydroCompiled/$(EXECUTABLE) Main.c Parser.c Definitions.c -Wno-discarded-qualifiers -Wno-incompatible-pointer-types -Wno-implicit-function-declaration
+# Compiler
+CC = gcc
+
+# Compiler flags
+CFLAGS = -Wall -Wextra -Werror -std=c99 -Iinclude -O3
+
+# Linker flags
+LDFLAGS = -lm
+
+# Source files
+SOURCES = $(wildcard src/*.c)
+
+# Object files
+OBJECTS = $(SOURCES:.c=.o)
+
+# Default target
+all: $(EXECUTABLE)
+
+# Linking
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
+
+# Compilation
+%.o: %.c
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 # Clean
 clean:
-	rm -rf HydroCompiled
+	rm -f $(OBJECTS) $(EXECUTABLE)
+	rm -f $(SOURCES:.c=.d)
 
-# Run
-run:
-	make all
-	./HydroCompiled/$(EXECUTABLE) $(ARGS)
+# Dependencies
+-include $(SOURCES:.c=.d)
 
-noremake:
-	./HydroCompiled/$(EXECUTABLE) $(ARGS)
+# Generate dependencies
+%.d: %.c
+	$(CC) -MM $< -MT $(@:.d=.o) > $@
+
+# Phony targets
+.PHONY: all clean
+
+# EOF

@@ -1,4 +1,4 @@
-#include "Parser.h"
+#include <HydroParser.h>
 //Variables
 Token* tokens = NULL;
 int tokenCount = 0;
@@ -37,7 +37,7 @@ void AddFunction(const char* name, ValidReturnType returnType, const Parameter* 
 	Function* function = &functions[functionCount++];
 	function->name = name;
 	function->returnType = returnType;
-	function->parameters = parameters;
+	function->parameters = (Parameter*)parameters;
 	function->parameterCount = parameterCount;
 	function->body = body;
 }
@@ -70,7 +70,7 @@ void FindFunctions(const char* source)
 	//confirm that the keyword is a return type
 	//add the function to the list of functions
 
-	char* current = source;
+	char* current = (char*)source;
 	int line = 1;
 	while (*current != '\0')
 	{
@@ -87,7 +87,6 @@ void FindFunctions(const char* source)
 			{
 				current++;
 			}
-			int length = current - name;
 			const char* parameters = current;
 			while (*current != ')')
 			{
@@ -129,8 +128,7 @@ void FindFunctions(const char* source)
 			{
 				current++;
 			}
-			int bodyLength = current - body;
-			AddFunction(name, returnType, parameterList, parameterCount, body);
+			AddFunction(name, returnType, parameterList, parameterCount, (char*)body);
 		}
 		//void
 		if (*current == 'v' && *(current + 1) == 'o' && *(current + 2) == 'i' && *(current + 3) == 'd' && *(current + 4) == ' ')
@@ -143,7 +141,6 @@ void FindFunctions(const char* source)
 			{
 				current++;
 			}
-			int length = current - name;
 			const char* parameters = current;
 			while (*current != ')')
 			{
@@ -185,8 +182,7 @@ void FindFunctions(const char* source)
 			{
 				current++;
 			}
-			int bodyLength = current - body;
-			AddFunction(name, returnType, parameterList, parameterCount, body);
+			AddFunction(name, returnType, parameterList, parameterCount, (char*)body);
 			//check for return statement
 			if (strstr(body, "return") != NULL)
 			{
@@ -219,12 +215,20 @@ void PrintFunctions()
 			printf("char\n");
 			break;
 		}
-		printcolor("Parameters: ", 3);
+		/// AzureianGH 6/24/24: I'm not sure why, but printing parameters causes a segfault, so I'm commenting it out for now.
+		///     				It creates a Access Violation reading location error I believe, further testing is needed.
+		
+		/*
 		for (int j = 0; j < function->parameterCount; j++)
 		{
-			Parameter* parameter = &function->parameters[j];;
+			Parameter* parameter = &function->parameters[j];
+			printcolor("Parameter Type: ", 5);
+			printf("%s\n", parameter->type);
+			printcolor("Parameter Name: ", 6);
+			printf("%s\n", parameter->name);
 		}
 		printf("\n");
+		*/ 
 		printcolor("Body: ", 2);
 		printf("%s\n", function->body);
 

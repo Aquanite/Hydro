@@ -36,14 +36,14 @@ typedef struct Variable
 } Variable;
 typedef struct Parameter
 {
-	const Token* type;
+	const char* type;
 	const char* name;
 } Parameter;
 typedef struct Function
 {
 	const char* name;
 	ValidReturnType returnType;
-	const char* parameters;
+	Parameter* parameters;
 	int parameterCount;
 	const char* body;
 } Function;
